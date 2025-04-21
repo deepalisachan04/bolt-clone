@@ -36,14 +36,33 @@ export const createUser = mutation({
 })
 
 export const GetUser = query({
-  args:{
-    email: v.string()
+  args: {
+    email: v.string(),
   },
-  handler: async (ctx, args) => {
-    const user = await ctx.db
-      .query('users')
-      .filter((q) => q.eq(q.field('email'), args.email))
-      .collect();
-    return user[0];
-  }
-})
+  handler: async ({ db }, args) => {
+    const user = await db
+      .query("users")
+      .filter((q) => q.eq(q.field("email"), args.email))
+      .unique();
+
+    return user;
+  },
+});
+
+// export const GetUser = query({
+//   args:{
+//     email: v.string()
+//   },
+//   handler: async (ctx, args) => {
+//     const user = await ctx.db
+//       .query('users')
+//       .filter((q) => q.eq(q.field('email'), args.email))
+//       .collect();
+
+//     console.log("fetching email: " + args.email);
+//     return user[0];
+//   }
+// })
+
+
+
