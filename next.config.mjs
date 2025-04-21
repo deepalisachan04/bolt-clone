@@ -1,4 +1,18 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
+import path from 'path';
+
+const nextConfig = {
+  webpack(config) {
+    // Use import.meta.url to resolve the directory
+    const dir = path.dirname(new URL(import.meta.url).pathname);
+    
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      '@': path.resolve(dir),  // Resolves the root directory correctly
+    };
+
+    return config;
+  },
+};
 
 export default nextConfig;
