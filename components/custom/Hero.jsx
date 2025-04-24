@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { useGoogleLogin } from '@react-oauth/google';
 import axios from 'axios';
 import { useMutation } from 'convex/react';
-import * as api from '@/convex/_generated/api';
+import {api} from '@/convex/_generated/api';
 import { v4 as uuid4 } from 'uuid';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useRouter } from 'next/navigation';  
@@ -55,24 +55,24 @@ function Hero() {
     }
     
   
-    // createWorkspace.mutate(
-    //   {
-    //     user: userDetail._id,
-    //     messages: [msg],
-    //   },
-    //   {
-    //     onSuccess: (workspaceId) => {
-    //       if (workspaceId) {
-    //         router.push('/workspace/' + workspaceId);
-    //       } else {
-    //         console.error('workspaceId is missing', workspaceId);
-    //       }
-    //     },
-    //     onError: (err) => {
-    //       console.error('error creating workspace', err);
-    //     },
-    //   }
-    // )
+    createWorkspace.mutate(
+      {
+        user: userDetail._id,
+        message: [msg],
+      },
+      {
+        onSuccess: (workspaceId) => {
+          if (workspaceId) {
+            router.push('/workspace/' + workspaceId);
+          } else {
+            console.error('workspaceId is missing', workspaceId);
+          }
+        },
+        onError: (err) => {
+          console.error('error creating workspace', err);
+        },
+      }
+    )
   }  
 
   return (
@@ -115,7 +115,7 @@ function Hero() {
       </div>  
 
       {/* SignInDialog Component */}
-      <SignInDialog openDialog={isDialogOpen} closeDialog={setIsDialogOpen} />
+      {/* <SignInDialog openDialog={isDialogOpen} closeDialog={setIsDialogOpen} /> */}
     </div>
   )
 }
