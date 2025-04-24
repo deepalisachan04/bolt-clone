@@ -1,16 +1,18 @@
-import { defineSchema, defineTable } from "convex/server";
-import { v } from "convex/values";  
+import { mutation } from "./server";
+import { v } from "convex/values";
 
-export default defineSchema({  
-    users: defineTable({  
-        name: v.string(),  
-        email: v.string(),  
-        picture: v.string(),  
-        uid: v.string()  
-    }),
-    workspace:defineTable({
-        message: v.any(),
-        fileData:v.optional(v.any()),
-        user:v.id('users')
-    })
-});  
+export const CreateWorkspace = mutation({
+  args: {
+    message: v.any(), 
+    user: v.id("users"),
+    fileData: v.optional(v.any()),
+  },
+  handler: async (ctx, args) => {
+    const workspaceId = await ctx.db.insert("workspace", {
+      message: args.message,
+      user: args.user,
+      fileData: args.fileData,
+    });
+    return workspaceId;
+  },
+});

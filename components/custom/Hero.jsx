@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { useGoogleLogin } from '@react-oauth/google';
 import axios from 'axios';
 import { useMutation } from 'convex/react';
-import * as api from '@/convex/_generated/api';
+import { api } from '@/convex/_generated/api';
 import { v4 as uuid4 } from 'uuid';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useRouter } from 'next/navigation';  
@@ -22,12 +22,12 @@ function Hero() {
   const { messages, setMessages } = useContext(MessagesContext);  
   const { userDetail } = useContext(UserDetailContext);  
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const createWorkspace = useMutation(api.workspace.CreateWorkspace);
+  const CreateWorkspace = useMutation(api.workspace.CreateWorkspace);
   const router = useRouter();  
 
   // Handles the form submission and dialog logic
   const onGenerate = async (input) => {
-    if (!userDetail) {
+    if (!userDetail || !userDetail._id) {
       setIsDialogOpen(true);
       return;
     }
@@ -39,40 +39,12 @@ function Hero() {
   
     setMessages(msg);
 
-    try {
-      const workspaceId = await createWorkspace({
-        user: userDetail._id,
-        messages: [msg],
-      });
-    
-      if (workspaceId) {
-        router.push('/workspace/' + workspaceId);
-      } else {
-        console.error('workspaceId is missing', workspaceId);
-      }
-    } catch (err) {
-      console.error('error creating workspace', err);
-    }
-    
-  
-    // createWorkspace.mutate(
-    //   {
-    //     user: userDetail._id,
-    //     messages: [msg],
-    //   },
-    //   {
-    //     onSuccess: (workspaceId) => {
-    //       if (workspaceId) {
-    //         router.push('/workspace/' + workspaceId);
-    //       } else {
-    //         console.error('workspaceId is missing', workspaceId);
-    //       }
-    //     },
-    //     onError: (err) => {
-    //       console.error('error creating workspace', err);
-    //     },
-    //   }
-    // )
+    const workspaceId = await CreateWorkspace({
+      user:userDetail._id,
+      message: [msg],
+    });
+    console.log("workspaceId", workspaceId);
+    router.push('/workspace/'+workspaceId);
   }  
 
   return (
