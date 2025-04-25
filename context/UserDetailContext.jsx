@@ -1,3 +1,4 @@
+"use client";
 import React, { useState } from 'react';
 export const UserDetailContext = React.createContext();
 
