@@ -12,6 +12,7 @@ import { useGoogleLogin } from '@react-oauth/google';
 import axios from 'axios';
 import { useMutation } from 'convex/react';
 import {api} from '@/convex/_generated/api';
+import { api } from '@/convex/_generated/api';
 import { v4 as uuid4 } from 'uuid';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useRouter } from 'next/navigation';  
@@ -22,12 +23,12 @@ function Hero() {
   const { messages, setMessages } = useContext(MessagesContext);  
   const { userDetail } = useContext(UserDetailContext);  
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const createWorkspace = useMutation(api.workspace.CreateWorkspace);
+  const CreateWorkspace = useMutation(api.workspace.CreateWorkspace);
   const router = useRouter();  
 
   // Handles the form submission and dialog logic
   const onGenerate = async (input) => {
-    if (!userDetail) {
+    if (!userDetail || !userDetail._id) {
       setIsDialogOpen(true);
       return;
     }

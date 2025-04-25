@@ -11,43 +11,44 @@ import { useGoogleLogin } from "@react-oauth/google";
 import axios from "axios";
 import { UserDetailContext } from "@/context/UserDetailContext";
 
-
 function SignInDialog({ openDialog, closeDialog }) {  
     const { userDetail, setUserDetail } = useContext(UserDetailContext);
     const createUser = useMutation(api.createUser.createUser); 
 
-    const googleLogin = useGoogleLogin({  
-        onSuccess: async (tokenResponse) => {  
-            try {
-                const userInfo = await axios.get(  
-                    'https://www.googleapis.com/oauth2/v3/userinfo',  
-                    { headers: { Authorization: 'Bearer ' + tokenResponse?.access_token } }  
-                );  
-
-                const user = userInfo.data;
-
-                await createUser({
-                    name: user?.name,  
-                    email: user?.email,  
-                    picture: user?.picture,  
-                    uid: uuid4()
-                });
-
-                if (typeof window !== 'undefined') {
-                    localStorage.setItem('user', JSON.stringify(user));
-                }
-
-                setUserDetail(user);
-                closeDialog(false);
-
-            } catch (error) {
-                console.error("Error during sign-in or user creation:", error);
+    const googleLogin = useGoogleLogin({
+        onSuccess: async (tokenResponse) => {
+          try {
+            const userInfo = await axios.get(
+              'https://www.googleapis.com/oauth2/v3/userinfo',
+              { headers: { Authorization: 'Bearer ' + tokenResponse?.access_token } }
+            );
+      
+            const user = userInfo.data;
+            const userId = uuid4(); // Generate or retrieve the user ID as needed
+      
+            await createUser({
+              name: user?.name,
+              email: user?.email,
+              picture: user?.picture,
+              uid: userId,
+            });
+      
+            if (typeof window !== 'undefined') {
+              localStorage.setItem('user', JSON.stringify(user));
             }
-        },  
+      
+            setUserDetail({ ...user, _id: userId }); // Make sure userDetail has _id
+            closeDialog(false);
+      
+          } catch (error) {
+            console.error("Error during sign-in or user creation:", error);
+          }
+        },
         onError: (errorResponse) => {
-            console.error("Google login error:", errorResponse);
-        },  
-    });  
+          console.error("Google login error:", errorResponse);
+        },
+      });
+      
 
     return (
         <Dialog open={openDialog} onOpenChange={closeDialog}>

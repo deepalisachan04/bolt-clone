@@ -1,12 +1,13 @@
-import { mutation } from './_generated/server';
-import { v } from 'convex/values';
-import * as api from '@/convex/_generated/api';
+/**
+ * @module workspace
+ */
+import { mutation } from "./server";
+import { v } from "convex/values";
 
 
-export const CreateWorkspace = mutation({
-    args: {
-        messages: v.any(),
-        user: v.id("users")
+export const GetWorkspace=query({
+     args:{
+        workspaceId: v.id('workspace')
     },
     handler: async (ctx, args) => {
         const workspaceId = await ctx.db.insert("workspace", {
@@ -19,13 +20,3 @@ export const CreateWorkspace = mutation({
 
     },
 });
-
-export const GetWorkspace=query({
-     args:{
-        workspaceId: v.id('workspace')
-    },
-    handler:async(ctx, args)=>{
-        const result=await ctx.db.get(args.workspaceId);
-        return result;
-    }
-})
