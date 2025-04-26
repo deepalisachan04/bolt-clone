@@ -3,7 +3,7 @@ import { MessagesContext } from "@/context/MessagesContext";
 import { UserDetailContext } from "@/context/UserDetailContext";
 import axios from "axios";
 import { useConvex } from "convex/react";
-import { lookup } from "dns";
+//import { lookup } from "dns";
 import { ArrowRight, Link, Loader2Icon } from "lucide-react";
 import { useParams } from "next/navigation";
 import React, { useContext, useEffect, useState } from "react";
@@ -12,7 +12,7 @@ function ChatView() {
     const { id } = useParams();
     const convex = useConvex();
     const { userDetail, setUserDetail } = useContext(UserDetailContext);
-    const { MessagesContext, setMessages } = useContext(MessagesContext);
+    const { messages, setMessages } = useContext(MessagesContext);
     const { userInput, setUserInput } = useState();
     const [loading, setLoading] = useState(false);
     useEffect(() => {
@@ -22,10 +22,12 @@ function ChatView() {
      * Use to get workspace data using Workspace Id
      */
     const GetWorkspaceData = async () => {
-        const result = await convex.query(api.workspace.GetWorkspace, {
-            workspaceId: id
-        });
-        setMessages(result?.messages)
+        try {
+            const result = await axios.get(`/api/workspace/${id}`); // Assuming your endpoint is like this
+            setMessages(result?.data?.messages); // Use the data from the response
+        } catch (error) {
+            console.error("Error fetching workspace data:", error);
+        }
     }
 
     useEffect(() => {
@@ -51,6 +53,7 @@ function ChatView() {
         setLoading(false);
     }
 
+    const INPUT_PLACEHOLDER = "Describe your dream project... 💡"
     return (
         <div className="relative h-[86vh] flex flex-col">
             <div className="flex-1 overflow-y-scroll">
@@ -76,10 +79,11 @@ function ChatView() {
                 </div>
                 }
             </div>
-            <div className='p-5 border rounded-xl max-w-2xl w-full mt-3 relative' style={{ backgroundColor: Colors.BACKGROUND }}>
+            <div className='p-5 border rounded-xl max-w-2xl w-full mt-3 relative' 
+            /*style={{ backgroundColor: Colors.BACKGROUND }}*/>
                 <div className='flex gap-2'>
                     <textarea
-                        placeholder={lookup.INPUT_PLACEHOLDER || "Describe your dream project... 💡"}
+                        placeholder={INPUT_PLACEHOLDER}
                         value={userInput}
                         onChange={(event) => setUserInput(event.target.value)}
                         className='outline-none bg-transparent w-full h-32 max-h-56 resize-none text-white-700'
