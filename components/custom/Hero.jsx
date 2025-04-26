@@ -2,7 +2,7 @@
 
 import React, { useState, useContext } from 'react';
 import Lookup from '@/data/Lookup';
-import { ArrowRight, Link as LinkIcon } from 'lucide-react'; 
+import { ArrowRight, Link, Link as LinkIcon } from 'lucide-react'; 
 import Colors from '@/data/Colors'; 
 import { MessagesContext } from '@/context/MessagesContext'; 
 import { UserDetailContext } from '@/context/UserDetailContext';
@@ -11,7 +11,6 @@ import { Button } from "@/components/ui/button";
 import { useGoogleLogin } from '@react-oauth/google';
 import axios from 'axios';
 import { useMutation } from 'convex/react';
-import {api} from '@/convex/_generated/api';
 import { api } from '@/convex/_generated/api';
 import { v4 as uuid4 } from 'uuid';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -43,7 +42,7 @@ function Hero() {
     try {
       const workspaceId = await createWorkspace({
         user: userDetail._id,
-        messages: [msg],
+        message: [msg],
       });
     
       if (workspaceId) {
@@ -90,11 +89,16 @@ function Hero() {
             onChange={(event) => setUserInput(event.target.value)}
             className='outline-none bg-transparent w-full h-32 max-h-56 resize-none text-white-700'
           />
-          <ArrowRight 
+          {userInput&&(
+            <ArrowRight 
             onClick={() => onGenerate(userInput)}
             className={`p-2 h-10 w-10 rounded-md cursor-pointer transition-all
-              ${userInput ? 'bg-blue-500 hover:bg-blue-600 text-white' : 'bg-transparent pointer-events-none'}`}
+              bg-blue-500 hover:bg-blue-600 text-white`}
           />
+            )}
+        </div>
+        <div>
+          <Link className='h-5 w-5'/>
         </div>
 
         <div className="absolute bottom-2 left-2">
@@ -103,7 +107,7 @@ function Hero() {
       </div>
 
       {/* Suggestion Buttons */}
-      <div className='flex flex-wrap mt-8 max-w-xl items-center justify-center gap-3 cursor-pointer'>
+      <div className='flex mt-8 flex-wrap mt-8 max-w-xl items-center justify-center gap-3 cursor-pointer'>
         {Lookup?.SUGGESTIONS?.map((suggestion, index) => (
           <h2
             key={index}
