@@ -2,6 +2,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Provider from "./provider";
 import ConvexClientProvider from "./ConvexClientProvider";
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -19,17 +20,30 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
-  return (
-    <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <ConvexClientProvider>
-          <Provider>
-            {children}
-          </Provider>
-        </ConvexClientProvider>
-      </body>
-    </html>
-  );
+  const queryClient = new QueryClient();
+    return (
+      <html lang="en" suppressHydrationWarning>
+        <body
+          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        >
+          {typeof window !== 'undefined' ? (
+          <QueryClientProvider client={queryClient}>
+            <ConvexClientProvider>
+              <Provider>
+                {children}
+              </Provider>
+            </ConvexClientProvider>
+          </QueryClientProvider>
+          ): (
+            <ConvexClientProvider>
+              <Provider>
+                {children}
+              </Provider>
+            </ConvexClientProvider>
+          )}
+        </body>
+      </html>
+    );
+  
+  // return <html><body>null</body></html>;
 }

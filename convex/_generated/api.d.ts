@@ -13,6 +13,7 @@ import type {
   FilterApi,
   FunctionReference,
 } from "convex/server";
+import type * as UserProfile from "../UserProfile.js";
 import type * as server from "../server.js";
 import type * as users from "../users.js";
 import type * as workspace from "../workspace.js";
@@ -26,6 +27,7 @@ import type * as workspace from "../workspace.js";
  * ```
  */
 declare const fullApi: ApiFromModules<{
+  UserProfile: typeof UserProfile;
   server: typeof server;
   users: typeof users;
   workspace: typeof workspace;
